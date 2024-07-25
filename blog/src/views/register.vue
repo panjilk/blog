@@ -2,15 +2,14 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import router from '@/router'
-import { FormRules } from 'element-plus'
-// import { showusers } from '@/axios/showusers'
-// const { getdata, showusers } = showusers()
+import { ElMessage, FormRules } from 'element-plus'
 // import {FormRules} from 'element-plus';
 // import { FormInstance } from 'ant-design-vue';
-const loginstate = reactive({
+const loginstate = ref({
   username: '',
   password: ''
 })
+const formdataref = ref()
 // const formdata = reactive({})
 // 定义表单校验规则
 const rule = reactive<FormRules>({
@@ -20,6 +19,17 @@ const rule = reactive<FormRules>({
   ],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 })
+const onSubmit = () => {
+  formdataref.value.validate((valid) => {
+    if (valid) {
+      ElMessage.success('登录成功')
+      router.push('/home')
+    } else {
+      ElMessage.error('登录失败')
+      return
+    }
+  })
+}
 
 const time = ref(new Date().toLocaleString())
 onMounted(() => {
@@ -27,21 +37,19 @@ onMounted(() => {
     time.value = new Date().toLocaleString()
   })
 })
-function register() {
-  router.push('/register')
+function backtologin() {
+  router.push('/')
 }
-import uselogin from '@/axios/login'
-const { login } = uselogin()
 </script>
 
 <template>
   <div id="login-all">
     <div id="title">
-      <h1>登录</h1>
+      <h1>注册</h1>
     </div>
     <div id="login">
       <el-form :model="loginstate" :rules="rule" label-width="auto" style="max-width: 700px">
-        <h2>图书出入库管理系统</h2>
+        <h2>注册页面</h2>
 
         <el-form-item label="用户名" style="margin-top: 15%" prop="username">
           <el-input v-model="loginstate.username" />
@@ -53,15 +61,15 @@ const { login } = uselogin()
           type="primary"
           size="large"
           style="margin-left: 25%; margin-top: 10%"
-          @click="login(loginstate.username, loginstate.password)"
-          >登录</el-button
+          @click="onSubmit"
+          >注册</el-button
         >
         <el-button
           type="primary"
           size="large"
           style="margin-left: 5%; margin-top: 10%"
-          @click="register"
-          >注册</el-button
+          @click="backtologin"
+          >返回登录</el-button
         >
       </el-form>
     </div>
